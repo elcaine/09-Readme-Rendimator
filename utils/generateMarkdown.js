@@ -14,7 +14,7 @@ return `[${url}](${url})`;
 // If there is no license, return an empty string
 function renderLicenseSection(license, Linfo) {
   if(!license){ return "";}
-  console.log("render Lic: ", license, "\tray: ", Linfo);
+  // console.log("render Lic: ", license, "\tray: ", Linfo);
   const Llink = renderLicenseLink(Linfo.url);
 
   return `License: ${license}, url: ${Linfo.url}`;
@@ -31,7 +31,7 @@ function generateMarkdown(data, Lray) {
   const Litem = Lray.find((element) => element.name === data.License)
   // console.log("Litem: ", Litem);
   const licStr = renderLicenseSection(data.License, Litem);
-  console.log("==================\nafter render: ", licStr, "\n============================");
+  // console.log("==================\nafter render: ", licStr, "\n============================");
 
   // Add all sections to str
   for(const key in data){

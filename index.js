@@ -50,7 +50,40 @@ async function getLicenses(){
         })
     // Populates all licenses' info
     licensesGH.push(...licenses.data);
+    // console.log(`================\nALL LICENSE INFO\n===================`);
+    // console.log(`licenseGH.length: ${licensesGH.length}`);
+    // for(let i = 0; i < licensesGH.length; i++){
+    //     console.log(licensesGH[i].key);
+    //     console.log(licensesGH[i].url);
+    //     console.log(`================\n`);
+    // }
+    xx();
 }
 
 // Function call to initialize app
 init();
+
+
+function xx(){
+    const fs = require('fs');
+    
+    const allFileContents = fs.readFileSync('./superDuperREADME.md', 'utf-8');
+    let ss;
+    allFileContents.split(/\r?\n/).forEach(line =>  {
+      checkEach(line);
+    });
+    // console.log(`ss: ${ss}`);
+    // wtf(ss);
+    // console.log(`Lkeys: ${Lkeys}`);
+    function checkEach(currentLine){
+        const daLine = currentLine.toLowerCase();
+        // console.log(`inside checkEach\tLkeys.length: ${licensesGH.length}`);
+        for(let i = 0; i < licensesGH.length; i++){
+            const daKey = licensesGH[i].key.toLowerCase();
+            // console.log(`Lkeys[${i}]: ${licensesGH[i].key}`);
+            if(daLine.includes(daKey)){
+                console.log(`$$$${licensesGH[i].key}$$$: ${currentLine}\n====`);
+            }
+        }
+    }
+}
