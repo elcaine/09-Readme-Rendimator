@@ -1,6 +1,8 @@
 // TODO: Create a function that returns a license badge based on which license is passed in
 // If there is no license, return an empty string
-function renderLicenseBadge(license) {}
+function renderLicenseBadge(license) {
+  console.log(`renderBadge>>>>>\n${license}`);
+}
 
 // TODO: Create a function that returns the license link
 // If there is no license, return an empty string
@@ -14,24 +16,24 @@ return `[${url}](${url})`;
 // If there is no license, return an empty string
 function renderLicenseSection(license, Linfo) {
   if(!license){ return "";}
-  // console.log("render Lic: ", license, "\tray: ", Linfo);
   const Llink = renderLicenseLink(Linfo.url);
+  const Lbadge = renderLicenseBadge(Linfo);
 
-  return `License: ${license}, url: ${Linfo.url}`;
+  return `## License: ${license}\n${Llink}`;
 }
 
 // TODO: Create a function to generate markdown for README
-function generateMarkdown(data, Lray) {
+function generateMarkdown(data, licObj) {
   // Build str, starting with Title
   if(data.Title === ''){ data.Title = `<<<No title entered>>>`;}
   else{ data.Title = data.Title.toUpperCase()}
   let str = `# ${data.Title}\n`;
   
   // Build License component to be added to str in loop later
-  const Litem = Lray.find((element) => element.name === data.License)
-  // console.log("Litem: ", Litem);
+  const Litem = licObj.find((element) => element.name === data.License)
+  console.log("Litem: ", Litem);
   const licStr = renderLicenseSection(data.License, Litem);
-  // console.log("==================\nafter render: ", licStr, "\n============================");
+  console.log("==================\nafter render: ", licStr, "\n============================");
 
   // Add all sections to str
   for(const key in data){

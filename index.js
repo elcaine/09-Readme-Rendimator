@@ -6,16 +6,33 @@ const md = require('./utils/generateMarkdown');
 const { Octokit } = require('octokit');
 const questions = [];
 const licensesGH = [];
+const licObject = [];
+const daBadges = [];
+
+
+const fs = require('fs'); 
+const badgeList = fs.readFileSync('./data/badges.txt', 'utf-8');
+
 
 // TODO: Create a function to initialize app
 function init() {
     getLicenses().then(() => {
+        // xx();
+        badgeList.split(/\r?\n/).forEach(line =>  {
+            checkEach(line);
+        });
+        console.log("badgeList()>> ", daBadges.length);
         // Build list of license names for Inquirer select-from-list input
         const questionsRay = [];
+        // console.log("badgeList: ", licensesGH);
         for(let i = 0; i < licensesGH.length; i++){
-            questionsRay.push(licensesGH[i].name);
+            const name = licensesGH[i].name;
+            const url = licensesGH[i].url;
+            const badge = licensesGH[i].node_id;
+            questionsRay.push(name);
+            licObject.push({name, url, badge});
         }
-
+        console.log("licObj>> ", licObject);
         questions.push(
             {type: `input`, message: `Enter a project title>> `,    name: `Title`},
             {type: `input`, message: `Project description>> `,      name: `Description`},
@@ -30,7 +47,7 @@ function init() {
     }).then(() => {
         inquirer.prompt(questions)
         .then((response) => {
-            const mdStr = md(response, licensesGH);
+            const mdStr = md(response, licObject);
             // console.log(`generateMarkdown output:\n${mdStr}\n==============================`);
             wtf(mdStr);
         })
@@ -50,40 +67,83 @@ async function getLicenses(){
         })
     // Populates all licenses' info
     licensesGH.push(...licenses.data);
-    // console.log(`================\nALL LICENSE INFO\n===================`);
-    // console.log(`licenseGH.length: ${licensesGH.length}`);
-    // for(let i = 0; i < licensesGH.length; i++){
-    //     console.log(licensesGH[i].key);
-    //     console.log(licensesGH[i].url);
-    //     console.log(`================\n`);
-    // }
-    xx();
+
+    /*
+
+
+
+
+
+
+
+
+
+
+
+
+        Get that damn badge here!!!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    */
+
+    console.log(`================\nALL LICENSE INFO\n===================`);
+    console.log(`license: ${licensesGH}`);
+    for(let i = 0; i < licensesGH.length; i++){
+        // licObject.push({})
+        // console.log(licensesGH[i].key);
+        console.log(licensesGH[i]);
+        // console.log(`================\n`);
+    }
 }
 
 // Function call to initialize app
 init();
 
 
-function xx(){
-    const fs = require('fs');
-    
-    const allFileContents = fs.readFileSync('./superDuperREADME.md', 'utf-8');
-    let ss;
-    allFileContents.split(/\r?\n/).forEach(line =>  {
-      checkEach(line);
-    });
-    // console.log(`ss: ${ss}`);
-    // wtf(ss);
-    // console.log(`Lkeys: ${Lkeys}`);
-    function checkEach(currentLine){
-        const daLine = currentLine.toLowerCase();
-        // console.log(`inside checkEach\tLkeys.length: ${licensesGH.length}`);
-        for(let i = 0; i < licensesGH.length; i++){
-            const daKey = licensesGH[i].key.toLowerCase();
-            // console.log(`Lkeys[${i}]: ${licensesGH[i].key}`);
-            if(daLine.includes(daKey)){
-                console.log(`$$$${licensesGH[i].key}$$$: ${currentLine}\n====`);
-            }
+function checkEach(currentLine){
+    const daLine = currentLine.toLowerCase();
+    // console.log(`inside checkEach\tLkeys.length: ${licensesGH.length}`);
+    for(let i = 0; i < licensesGH.length; i++){
+        const daKey = licensesGH[i].key.toLowerCase();
+        // console.log(`Lkeys[${i}]: ${licensesGH[i].key}`);
+        if(daLine.includes(daKey)){
+            // console.log(`${licensesGH[i].key}=>\n${currentLine}\n====`);
+            daBadges.push(currentLine);
         }
     }
 }
+
+// function xx(){
+//     const fs = require('fs');
+    
+//     const badgeList = fs.readFileSync('./data/badges.txt', 'utf-8');
+//     badgeList.split(/\r?\n/).forEach(line =>  {
+//       checkEach(line);
+//     });
+//     console.log(`licObject: ${licObject}`);
+//     function checkEach(currentLine){
+//         const daLine = currentLine.toLowerCase();
+//         // console.log(`inside checkEach\tLkeys.length: ${licensesGH.length}`);
+//         for(let i = 0; i < licensesGH.length; i++){
+//             const daKey = licensesGH[i].key.toLowerCase();
+//             // console.log(`Lkeys[${i}]: ${licensesGH[i].key}`);
+//             if(daLine.includes(daKey)){
+//                 // console.log(`${licensesGH[i].key}=>\n${currentLine}\n====`);
+//                 licensesGH[i].badge = currentLine;
+//             }
+//         }
+//     }
+// }
