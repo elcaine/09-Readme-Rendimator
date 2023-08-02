@@ -6,48 +6,43 @@ const md = require('./utils/generateMarkdown');
 const { Octokit } = require('octokit');
 const questions = [];
 const licensesGH = [];
-const licObject = [];
+const licObjects = [];
 const daBadges = [];
 
 
-const fs = require('fs'); 
+const fs = require('fs');
+// List of badges (Original Markdown source: https://gist.github.com/lukas-h/2a5d00690736b4c3a7ba)
 const badgeList = fs.readFileSync('./data/badges.txt', 'utf-8');
 
 
 // TODO: Create a function to initialize app
 function init() {
     getLicenses().then(() => {
-        // xx();
-        badgeList.split(/\r?\n/).forEach(line =>  {
-            checkEach(line);
-        });
-        console.log("badgeList()>> ", daBadges.length);
-        // Build list of license names for Inquirer select-from-list input
+        // Build list of license names for Inquirer select-from-list input AND array of license objects
         const questionsRay = [];
-        // console.log("badgeList: ", licensesGH);
         for(let i = 0; i < licensesGH.length; i++){
-            const name = licensesGH[i].name;
-            const url = licensesGH[i].url;
-            const badge = licensesGH[i].node_id;
+            let {name, url, badge} = licensesGH[i];
             questionsRay.push(name);
-            licObject.push({name, url, badge});
+            licObjects.push({name, url, badge});
         }
-        console.log("licObj>> ", licObject);
+        // console.log("after getLicense()>> ", licObjects, "\nNumber: ", licObjects.length);
         questions.push(
-            {type: `input`, message: `Enter a project title>> `,    name: `Title`},
-            {type: `input`, message: `Project description>> `,      name: `Description`},
-            {type: `input`, message: `Table of Contents>> `,        name: `ToC`},
-            {type: `input`, message: `Installation>> `,             name: `Install`},
-            {type: `input`, message: `Usage>> `,                    name: `Usage`},
-            {type: `list`,  message: `License>> `,                  name: `License`, choices: questionsRay},
-            {type: `input`, message: `Contributing>> `,             name: `Contributors`},
-            {type: `input`, message: `Tests>> `,                    name: `Tests`},
-            {type: `input`, message: `Questions>> `,                name: `Questions`},
+            {type: `input`, message: `Enter a project title>> `,    name: `title`},
+            {type: `input`, message: `Project description>> `,      name: `description`},
+            {type: `input`, message: `Author>> `,                   name: `auth`},
+            {type: `input`, message: `Table of Contents>> `,        name: `toc`},
+            {type: `input`, message: `Installation>> `,             name: `install`},
+            {type: `input`, message: `Usage>> `,                    name: `usage`},
+            {type: `list`,  message: `License>> `,                  name: `lic`, choices: questionsRay},
+            {type: `input`, message: `Contributing>> `,             name: `contribute`},
+            {type: `input`, message: `Tests>> `,                    name: `tests`},
+            {type: `input`, message: `GitHub link>> `,              name: `github`},
+            {type: `input`, message: `Email>> `,                    name: `email`},
         );
     }).then(() => {
         inquirer.prompt(questions)
         .then((response) => {
-            const mdStr = md(response, licObject);
+            const mdStr = md(response, licObjects);
             // console.log(`generateMarkdown output:\n${mdStr}\n==============================`);
             wtf(mdStr);
         })
@@ -58,55 +53,35 @@ function init() {
 
 
 async function getLicenses(){
+    // Github list of licenses
     const octokit = new Octokit({
         auth: process.env.GH_TOKEN
-      })
-      
+    })  
     const licenses = await octokit.request('GET /licenses', {
         headers: {'X-GitHub-Api-Version': '2022-11-28'}
-        })
-    // Populates all licenses' info
+    })
+// console.log("??? ", licenses);
+    // Populates all licenses' info from GitHub
     licensesGH.push(...licenses.data);
+    // console.log("??? ", licensesGH);
 
-    /*
+    // Adds badge element to license elements found in github list of licenses
+    badgeList.split(/\r?\n/).forEach(line =>  {
+        checkEach(line);
+    });
 
-
-
-
-
-
-
-
-
-
-
-
-        Get that damn badge here!!!
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    */
-
-    console.log(`================\nALL LICENSE INFO\n===================`);
-    console.log(`license: ${licensesGH}`);
-    for(let i = 0; i < licensesGH.length; i++){
-        // licObject.push({})
-        // console.log(licensesGH[i].key);
-        console.log(licensesGH[i]);
-        // console.log(`================\n`);
-    }
+    // for(lic of licensesGH){
+    //     let str = lic.url;
+    //     str = str.substring(str.lastIndexOf('/') + 1);
+    //     for(b of daBadges){
+    //         const bStr = b.toLowerCase();
+    //         if(bStr.includes(str)){
+    //             lic.badge = b;
+    //             break;
+    //         }
+    //     }
+    // }
+    // console.log("aft: ", licensesGH);
 }
 
 // Function call to initialize app
@@ -115,17 +90,35 @@ init();
 
 function checkEach(currentLine){
     const daLine = currentLine.toLowerCase();
-    // console.log(`inside checkEach\tLkeys.length: ${licensesGH.length}`);
-    for(let i = 0; i < licensesGH.length; i++){
-        const daKey = licensesGH[i].key.toLowerCase();
-        // console.log(`Lkeys[${i}]: ${licensesGH[i].key}`);
+    for(lic of licensesGH){
+
+
+
+
+        const licFilePath = lic.url;
+        getText(licFilePath, lic);
+
+
+        
+        
+        const daKey = lic.key.toLowerCase();
+        // If badge line includes 'key' from github list of licenses, set badge
         if(daLine.includes(daKey)){
-            // console.log(`${licensesGH[i].key}=>\n${currentLine}\n====`);
-            daBadges.push(currentLine);
+            // daBadges.push(currentLine);
+            lic.badge = currentLine;
+            break;
         }
     }
 }
+    
+    async function getText(fp, licObj) {
+        let curLic = await fetch(fp);
+        let licJson = await curLic.json();
+        licObj.url = licJson.html_url;
+        console.log("output>>> ", licObj.url, "\n=======================");
+      }
 
+// Development code to get badge lines from source (source:  https://gist.github.com/lukas-h/2a5d00690736b4c3a7ba)
 // function xx(){
 //     const fs = require('fs');
     
