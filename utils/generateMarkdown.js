@@ -1,14 +1,20 @@
 // TODO: Create a function that returns a license badge based on which license is passed in
 // If there is no license, return an empty string
 function renderLicenseBadge(selLicIn) {
-  if(!selLicIn.badge){ return "";}
+  if(!selLicIn.badge){  
+    console.log("Empty license badge>> ", selLicIn);
+    return "";
+  }
   return selLicIn.badge;
 }
 
 // TODO: Create a function that returns the license link
 // If there is no license, return an empty string
 function renderLicenseLink(url) {
-if(!url){ return "";}  
+if(!url){
+  console.log("Empty license url");
+  return "";
+}  
 return `[${url}](${url})`;
 }
 
@@ -16,12 +22,18 @@ return `[${url}](${url})`;
 // If there is no license, return an empty string
 function renderLicenseSection(selLicIn) {
   if(!selLicIn){ 
-    console.log("render works>> ", selLicIn);
+    console.log("Empty license>> ", selLicIn);
     selLicIn.name = "";
   }
-  const licTxt = ""; // TODO TODO TODO
-  return `## License ${selLicIn.name} ${renderLicenseLink(selLicIn.url)}
-  ${licTxt}`; // Returns: "<some license name>: [construved hyperlink]"
+  if(!selLicIn.txt){
+    console.log("Empty license text>> ", selLicIn);
+    selLicIn.txt = "";
+  }
+
+
+  return `## License ${selLicIn.name}
+  ${renderLicenseLink(selLicIn.url)}
+  ${selLicIn.txt}`; // Returns: "<some license name>: [constructed hyperlink]... \nLicense description"
 }
 
 // TODO: Create a function to generate markdown for README
@@ -46,31 +58,41 @@ function generateMarkdown(res, licList) {
 
 module.exports = generateMarkdown;
 
-function genMDhelper({title, auth, description, toc, install, usage,
+function genMDhelper({title, auth, description, install, usage,
   contribute, tests, github, email}, badge, lic){
     return `# ${title} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ${badge}
 ## Description
 ${description}
 ### By: ${auth}
 ### Table of Contents
-${toc}
+1.  [Description](#Description)
+2.  [Author](#By)
+3.  [Table of Contents]<Table of Contents>
+4.  [Installation](#Installation)
+5.  [Usage](#Usage)
+6.  [Contributing Guidelines]<Contributing guidelines>
+7.  [Test instructions]<Test instructions>
+8.  [Questions](#Questions)
+9.  [License](#License)
 
 ## Installation
 ${install}
 
-## Use
+## Usage
 ${usage}
 
-## Contributing guidelines:
+## Contributing guidelines
 ${contribute}
 
 ## Test instructions
 ${tests}
 
 ## Questions?
-### GitHub: [${github}](https://${github})
+### GitHub: [${github}](https://github.com/${github})
 ### Email: [${email}](mailto:${email})
+Please review my GitHub profile and/or contact me via the email noted above if you have any further questions.
 
+## License
 ${lic}`;
-  }
+}
   
