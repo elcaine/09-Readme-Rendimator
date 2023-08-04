@@ -1,20 +1,20 @@
 # 09 - My README Rendimator
 
 ## Description
-This is command-line application that will generate s starter README.md file based on a user's responses to prompts.
+This is a command-line application that will generate a starter README.md file based on a user's responses to prompts.
 
 
 ### By: Caine Winters
 
 ## Usage
 - Navigate to directory holding the "index.js" file.
-- Use enter "node index.js" to exectute the application.
+- User enters "node index.js" to exectute the application.
 - Answer the prompts presented.
 - Once complete, the README.md file is output to the desktop.
-- Open the README.md file and modify as desired.
+- Open the README.md file and modify/fill-in as desired.
 
 ### Screenshot of README generator not include for this challenge
-No screenshot provided for this challenge due to provided video covering all possible instances of where a screenshot would have been taken.
+No screenshot provided for this challenge due to provided video covering all possible instances where a screenshot would have been taken.
 
 ## Links
 ### Link to repo: [Link to repo](https://github.com/elcaine/09-Readme-Rendimator)
