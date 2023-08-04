@@ -61,38 +61,48 @@ module.exports = generateMarkdown;
 function genMDhelper({title, auth, description, install, usage,
   contribute, tests, github, email}, badge, lic){
     return `# ${title} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ${badge}
+<a id="descr"></a>
 ## Description
 ${description}
+<a id="auth"></a>
 ### By: ${auth}
+<a id="toc"></a>
 ### Table of Contents
-1.  [Description](#Description)
-2.  [Author](#By)
-3.  [Table of Contents]<Table of Contents>
-4.  [Installation](#Installation)
-5.  [Usage](#Usage)
-6.  [Contributing Guidelines]<Contributing guidelines>
-7.  [Test instructions]<Test instructions>
-8.  [Questions](#Questions)
-9.  [License](#License)
+1.  [Description](#descr)
+2.  [Author](#auth)
+3.  [Table of Contents](#toc)
+4.  [Installation](#install)
+5.  [Usage](#use)
+6.  [Contributing Guidelines](#contr)
+7.  [Test instructions](#test)
+8.  [Questions](#quest)
+9.  [License](#lic)
 
+<a id="install"></a>
 ## Installation
 ${install}
 
+<a id="use"></a>
 ## Usage
 ${usage}
 
+<a id="contr"></a>
 ## Contributing guidelines
 ${contribute}
 
+<a id="test"></a>
 ## Test instructions
 ${tests}
 
+<a id="quest"></a>
 ## Questions?
 ### GitHub: [${github}](https://github.com/${github})
 ### Email: [${email}](mailto:${email})
 Please review my GitHub profile and/or contact me via the email noted above if you have any further questions.
 
+<a id="lic"></a>
 ## License
-${lic}`;
+${lic}
+`;
 }
   
